@@ -135,10 +135,17 @@ html[data-reveal-armed='yes'] [data-reveal][data-in='yes'] { opacity: 1; transfo
   align-items: center;
 }
 .reactions__hero { margin: 0; position: relative; }
-.reactions__hero img {
-  width: 100%; max-width: 268px; height: auto;
+/* Sized so the native asset stays at or above 1:1 on a standard display:
+   source is ~455px tall, shown at 300. The old assets were ~130px shown at
+   268 - that is where the softness came from. */
+.reactions__figure {
+  width: auto; height: clamp(230px, 26vw, 300px); max-width: 100%;
+  object-fit: contain; object-position: bottom left;
   filter: drop-shadow(0 30px 50px rgb(0 0 0 / 0.55));
+  animation: react-in var(--t-normal) var(--e-out);
 }
+@keyframes react-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .reactions__figure { animation: none; } }
 .reactions__hero figcaption {
   display: flex; flex-direction: column; gap: 2px; margin-top: var(--s-4);
 }
@@ -146,6 +153,26 @@ html[data-reveal-armed='yes'] [data-reveal][data-in='yes'] { opacity: 1; transfo
   font-size: clamp(24px, 3vw, 34px); font-weight: 600;
   letter-spacing: -0.03em; color: var(--acid);
 }
+.reactions__panel { display: flex; flex-direction: column; gap: var(--s-4); }
+
+/* compact pack switch: two words, LAGLO-style, not a tab bar */
+.reactions__switch { display: inline-flex; gap: 4px; align-self: flex-start; }
+.reactions__set {
+  padding: 7px 14px; cursor: pointer;
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+  background: transparent;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+  transition: color var(--t-fast) var(--e-out), border-color var(--t-fast) var(--e-out),
+              background var(--t-fast) var(--e-out);
+}
+.reactions__set:hover { color: var(--text); border-color: color-mix(in oklab, var(--cream) 30%, transparent); }
+.reactions__set[data-on='yes'] {
+  color: var(--ink); background: var(--acid); border-color: var(--acid); font-weight: 600;
+}
+
 .reactions__rail {
   display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: var(--s-3);
@@ -164,7 +191,7 @@ html[data-reveal-armed='yes'] [data-reveal][data-in='yes'] { opacity: 1; transfo
               border-color var(--t-fast) var(--e-out);
 }
 .reactions__chip:hover { background: color-mix(in oklab, var(--cream) 7%, transparent); }
-.reactions__chip img { width: 100%; max-width: 62px; height: auto; }
+.reactions__chip img { width: auto; height: 62px; max-width: 100%; object-fit: contain; }
 .reactions__chip .meta { font-size: 9px; letter-spacing: 0.1em; }
 .reactions__chip[data-on='yes'] {
   background: color-mix(in oklab, var(--acid) 12%, transparent);
@@ -313,16 +340,19 @@ html[data-reveal-armed='yes'] [data-reveal][data-in='yes'] { opacity: 1; transfo
 /* ---- responsive --------------------------------------------- */
 @media (max-width: 900px) {
   .reactions__stage { grid-template-columns: 1fr; }
-  .reactions__hero img { max-width: 240px; margin-inline: auto; }
+  .reactions__figure { height: clamp(200px, 46vw, 260px); margin-inline: auto; object-position: bottom center; }
   .reactions__hero figcaption { align-items: center; text-align: center; }
+  .reactions__switch { align-self: center; }
   .meme__grid { grid-template-columns: 1fr; }
   .universe__row { grid-template-columns: 1fr; }
   .universe__card { min-height: 0; }
 }
 @media (max-width: 560px) {
   .reactions__rail { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
-  .reactions__chip { padding: 8px 4px; }
-  .reactions__chip .meta { font-size: 8px; letter-spacing: 0.06em; }
+  .reactions__chip { padding: 8px 4px; min-height: 92px; }
+  .reactions__chip img { height: 52px; }
+  .reactions__chip .meta { font-size: 8px; letter-spacing: 0.04em; }
+  .reactions__set { padding: 9px 14px; min-height: 40px; }
   .missing__track { max-width: 100%; height: 150px; }
   .missing__track::before { right: 66px; }
   .missing__slot { width: 132px; height: 132px; }

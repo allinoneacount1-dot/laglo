@@ -1,24 +1,16 @@
 import { useState } from 'react';
 import { Atmos } from '../components/Atmos';
+import {
+  REACTIONS, REACTION_PACKS, reactionSrc, reactionThumb, type ReactionPack,
+} from '../lib/reactions';
 
 /**
- * The reaction set, taken straight from the supplied model sheet — each cell
- * cut out of the owner's own render. Not a 3x3 grid: one dominant figure with
- * the rest queued alongside him, waiting their turn.
+ * One dominant reaction, the rest queued alongside. Two supplied packs, and a
+ * compact switch between them - not a tab bar, and not an editor.
  */
-const REACTIONS = [
-  { id: 'neutral', label: 'neutral', say: '...' },
-  { id: 'happy', label: 'happy-ish', say: 'almost.' },
-  { id: 'confused', label: 'confused', say: 'huh?' },
-  { id: 'thinking', label: 'thinking', say: 'loading...' },
-  { id: 'panic', label: 'panic', say: '!!!' },
-  { id: 'tired', label: 'tired', say: 'so close...' },
-  { id: 'done-ish', label: 'done-ish', say: '99%' },
-  { id: 'empty-brain', label: 'empty brain', say: '...' },
-] as const;
-
 export function Reactions() {
   const [active, setActive] = useState(0);
+  const [pack, setPack] = useState<ReactionPack>('a');
   const cur = REACTIONS[active];
 
   return (
@@ -31,11 +23,13 @@ export function Reactions() {
         <div className="reactions__stage">
           <figure className="reactions__hero">
             <img
-              src={`/laglo/expr-${cur.id}.webp`}
+              /* keyed so a pack or state change remounts and crossfades */
+              key={`${pack}-${cur.id}`}
+              className="reactions__figure"
+              src={reactionSrc(pack, cur.id)}
               alt={`LAGLO, ${cur.label}`}
-              width={360}
-              height={420}
-              loading="lazy"
+              width={320}
+              height={455}
               decoding="async"
             />
             <figcaption>
@@ -44,24 +38,48 @@ export function Reactions() {
             </figcaption>
           </figure>
 
-          <ul className="reactions__rail" role="tablist" aria-label="LAGLO reactions">
-            {REACTIONS.map((r, i) => (
-              <li key={r.id}>
+          <div className="reactions__panel">
+            <div className="reactions__switch" role="group" aria-label="reaction pack">
+              {REACTION_PACKS.map((p) => (
                 <button
+                  key={p}
                   type="button"
-                  role="tab"
-                  aria-selected={i === active}
-                  className="reactions__chip"
-                  data-on={i === active ? 'yes' : 'no'}
-                  onClick={() => setActive(i)}
-                  onMouseEnter={() => setActive(i)}
+                  className="reactions__set"
+                  data-on={p === pack ? 'yes' : 'no'}
+                  aria-pressed={p === pack}
+                  onClick={() => setPack(p)}
                 >
-                  <img src={`/laglo/expr-${r.id}.webp`} alt="" width={72} height={84} loading="lazy" decoding="async" />
-                  <span className="meta">{r.label}</span>
+                  set {p}
                 </button>
-              </li>
-            ))}
-          </ul>
+              ))}
+            </div>
+
+            <ul className="reactions__rail" role="tablist" aria-label="LAGLO reactions">
+              {REACTIONS.map((r, i) => (
+                <li key={r.id}>
+                  <button
+                    type="button"
+                    role="tab"
+                    aria-selected={i === active}
+                    className="reactions__chip"
+                    data-on={i === active ? 'yes' : 'no'}
+                    onClick={() => setActive(i)}
+                    onMouseEnter={() => setActive(i)}
+                  >
+                    <img
+                      src={reactionThumb(pack, r.id)}
+                      alt=""
+                      width={72}
+                      height={100}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    <span className="meta">{r.label}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </section>

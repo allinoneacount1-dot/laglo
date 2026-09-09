@@ -86,19 +86,7 @@ await contact(TURN.map(n=>`turn-${n}`), 4, 210, 250, 'turnaround-dark');
   console.log(`fragment: ${fw*6}x${fh*6}   body-no-fragment: ${r1.w}x${r1.h}`);
 }
 
-// ---------- 3. EXPRESSIONS ----------
-const EXPR = ['neutral','happy','confused','thinking','panic','tired','done-ish','empty-brain'];
-{
-  const cells = findCells(model, 14, 1010, 746, 888, 5, 45);
-  console.log(`expressions: detected ${cells.length} cells`, cells.map(c=>c[1]-c[0]).join(','));
-  for (let i=0;i<cells.length && i<EXPR.length;i++){
-    const c = cutout(model, cells[i][0], 746, cells[i][1], 888, [[14,746,150,760]]);
-    await emit(`expr-${EXPR[i]}`, c, bbox(c, null));
-  }
-  await contact(EXPR.map(n=>`expr-${n}`), 4, 190, 200, 'expressions-dark');
-}
-
-// ---------- 4. POSES ----------
+// ---------- 3. POSES ----------
 const POSE = ['stand','one-sec','walk','sit','lie-down','point','hold','idle','jump'];
 {
   const cells = findCells(model, 14, 1010, 958, 1096, 5, 45);

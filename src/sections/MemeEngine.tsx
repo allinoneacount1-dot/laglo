@@ -1,10 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Atmos } from '../components/Atmos';
+import { REACTIONS, reactionSrc } from '../lib/reactions';
 
 /**
  * MEME ENGINE — community remix surface (section 14).
  * Composites a canonical pose from the model sheet with a caption onto a
  * canvas and hands back a PNG. Deliberately four controls, not an editor.
+ */
+/**
+ * One figure list, two sources: the canonical poses from the model sheet and
+ * the reaction packs. The reactions come from lib/reactions so the section and
+ * the meme engine share a single asset pipeline rather than two drifting lists.
  */
 const POSES = [
   { id: 'stand', label: 'stand' },
@@ -16,6 +22,11 @@ const POSES = [
   { id: 'hold', label: 'hold' },
   { id: 'jump', label: 'jump' },
 ] as const;
+
+const FIGURES: { id: string; label: string; src: string }[] = [
+  ...POSES.map((p) => ({ id: p.id, label: p.label, src: `/laglo/pose-${p.id}.webp` })),
+  ...REACTIONS.map((r) => ({ id: `r-${r.id}`, label: r.label, src: reactionSrc('a', r.id) })),
+];
 
 const CAPTIONS = ['almost.', 'one sec.', 'still loading.', '99%.', 'done-ish.', 'loading thought...'];
 
@@ -47,7 +58,7 @@ export function MemeEngine() {
     ctx.fillRect(0, 0, W, H);
 
     const img = new Image();
-    img.src = `/laglo/pose-${POSES[pose].id}.webp`;
+    img.src = FIGURES[pose].src;
     try { await img.decode(); } catch { /* fall through to text-only frame */ }
 
     if (img.complete && img.naturalWidth) {
@@ -94,7 +105,7 @@ export function MemeEngine() {
       const url = c.toDataURL('image/png');
       const a = document.createElement('a');
       a.href = url;
-      a.download = `laglo-${POSES[pose].id}.png`;
+      a.download = `laglo-${FIGURES[pose].id}.png`;
       a.click();
     }
     window.setTimeout(() => setBusy(false), 420);
@@ -114,12 +125,12 @@ export function MemeEngine() {
 
           <div className="meme__controls">
             <fieldset className="meme__set">
-              <legend className="meta">pose</legend>
+              <legend className="meta">figure</legend>
               <div className="meme__chips">
-                {POSES.map((p, i) => (
-                  <button key={p.id} type="button" className="meme__chip"
+                {FIGURES.map((f, i) => (
+                  <button key={f.id} type="button" className="meme__chip"
                     data-on={i === pose ? 'yes' : 'no'} onClick={() => setPose(i)}>
-                    {p.label}
+                    {f.label}
                   </button>
                 ))}
               </div>
