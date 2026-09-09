@@ -46,3 +46,4 @@ assets-src/derived/
 
 # NOTE: tools/canon-golden/ is deliberately NOT ignored. Those five renders
 # are the canonical regression references (npm run canon:golden).
+
