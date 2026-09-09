@@ -37,6 +37,7 @@ tools/site/
 tools/evidence/
 tools/preview/
 tools/canon-out/
+tools/prod/
 
 # ---- derived art ------------------------------------------------------
 # Regenerated from the committed source sheets by tools/build-*.mjs.
