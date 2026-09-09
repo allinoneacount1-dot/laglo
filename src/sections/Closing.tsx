@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useReveal } from '../lib/useReveal';
 import { Wordmark } from '../components/Wordmark';
+import { Atmos } from '../components/Atmos';
 
 /* ---- LORE: fragments, not paragraphs (section 15) ------------------ */
 const FRAGMENTS = [
@@ -18,6 +19,7 @@ export function Lore() {
 
   return (
     <section className="sec lore" id="lore" ref={ref} aria-labelledby="lore-h">
+      <Atmos plate="b" variant="lore" />
       <div className="shell">
         <p className="meta">05 — lore</p>
         <h2 className="sr-only" id="lore-h">Where LAGLO came from</h2>
@@ -44,6 +46,7 @@ const CAST = [
 export function Universe() {
   return (
     <section className="sec universe" aria-labelledby="universe-h">
+      <Atmos plate="b" variant="universe" />
       <div className="shell">
         <p className="meta">06 — elsewhere</p>
         <h2 className="display universe__h" id="universe-h">others exist.<br />not yet.</h2>
@@ -79,6 +82,7 @@ export function Almosts() {
 
   return (
     <section className="sec almosts" id="almosts" aria-labelledby="almosts-h">
+      <Atmos plate="b" variant="almosts" />
       <div className="shell almosts__inner">
         <h2 className="display almosts__h" id="almosts-h">
           everyone is<br />almost something.
@@ -103,6 +107,7 @@ export function Almosts() {
 export function Final() {
   return (
     <footer className="sec final" aria-labelledby="final-h">
+      <Atmos plate="b" variant="final" />
       <div className="shell final__inner">
         <p className="display final__big" id="final-h">99%</p>
         <p className="final__say say">still loading.</p>

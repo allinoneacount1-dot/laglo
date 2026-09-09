@@ -1,4 +1,5 @@
 import { useReveal } from '../lib/useReveal';
+import { Atmos } from '../components/Atmos';
 
 /* Oversized editorial type, not a card. The list reveals as you arrive,
    one line at a time, each a little slower than feels comfortable. */
@@ -9,6 +10,7 @@ export function WhatIsLaglo() {
 
   return (
     <section className="sec what" id="what" ref={ref} aria-labelledby="what-h">
+      <Atmos plate="a" variant="what" />
       <div className="shell">
         <p className="meta">01 — what is laglo</p>
         <h2 className="display what__lead" id="what-h" data-reveal>

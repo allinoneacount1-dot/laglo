@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Atmos } from '../components/Atmos';
 
 /**
  * THE MISSING 1% — the second attempt.
@@ -117,6 +118,7 @@ export function Missing() {
 
   return (
     <section className="sec missing" id="missing" aria-labelledby="missing-h">
+      <Atmos plate="a" variant="missing" />
       <div className="shell">
         <p className="meta">02 — the missing 1%</p>
         <h2 className="display missing__h" id="missing-h">put it<br />back.</h2>

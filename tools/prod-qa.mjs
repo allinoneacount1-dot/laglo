@@ -36,7 +36,7 @@ for (const [tag, w, h, mob] of [['1440', 1440, 900, false], ['390', 390, 844, tr
     links: [...document.querySelectorAll('a[href^="#"]')].every((a) => a.getAttribute('href') === '#top' || !!document.getElementById(a.getAttribute('href').slice(1))),
   }));
 
-  const approach = await until(p, (r) => { const v = parseFloat(r); return v >= 99.4 && v <= 99.9; });
+  await until(p, (r) => { const v = parseFloat(r); return v >= 99.4 && v <= 99.9; });
   await p.screenshot({ path: `${OUT}/${tag}-999.png` });
   const pct = (await p.textContent('.hero__pct'))?.trim();
   const onesec = await until(p, (_r, c) => c === 'one sec.');

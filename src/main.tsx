@@ -6,6 +6,7 @@ import './styles/glass.css';
 import './styles/components.css';
 import './styles/hero.css';
 import './styles/sections.css';
+import './styles/atmos.css';
 import App from './App';
 
 createRoot(document.getElementById('root')!).render(

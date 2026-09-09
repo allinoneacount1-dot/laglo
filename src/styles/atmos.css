@@ -1,0 +1,143 @@
+/* ============================================================
+   ATMOSPHERIC SCROLL PLATES
+
+   Two supplied plates carry the world past the hero, so the page
+   descends into LAGLO's dark internet rather than dropping into a
+   flat black void.
+
+   Rules this file keeps to:
+   - the plate never competes with LAGLO, 99%, the 1% or typography
+   - every section gets its own framing, opacity and scrim
+   - each plate fades at its top and bottom edge, so sections read as
+     one continuous world instead of stacked rectangles
+   - readability is solved with a directional scrim, never by
+     blurring the plate into mud
+   ============================================================ */
+
+.atmos {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  /* vertical fade at both edges: no hard seam between sections */
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+          mask-image: linear-gradient(180deg, transparent 0%, #000 15%, #000 85%, transparent 100%);
+}
+
+.atmos img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: var(--atmos-o, 0.3);
+}
+
+/* Readability scrim. Direction follows where the copy actually sits, so the
+   plate stays legible as an image while the text stays legible as text. */
+.atmos::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--atmos-scrim,
+    linear-gradient(100deg,
+      rgb(6 7 8 / 0.86) 0%,
+      rgb(6 7 8 / 0.58) 28%,
+      rgb(6 7 8 / 0.18) 52%,
+      transparent 72%));
+}
+
+/* content sits above the plate */
+.sec > .shell { position: relative; z-index: 1; }
+.final { position: relative; }
+
+/* ---- A: upper-mid journey ---------------------------------- */
+
+/* broad and atmospheric, plenty of negative space; the horizon glow is
+   pushed low and right, away from the headline */
+.atmos--what {
+  --atmos-o: 0.30;
+}
+.atmos--what img { object-position: 68% 66%; }
+
+/* the energy is deliberately aligned with the interaction, which lives on
+   the right half of this section */
+.atmos--missing {
+  --atmos-o: 0.44;
+}
+.atmos--missing img { object-position: 60% 32%; }
+
+/* the darker water, so neither the large figure nor the reaction rail ever
+   sits in front of a hotspot */
+.atmos--reactions {
+  --atmos-o: 0.26;
+  --atmos-scrim: linear-gradient(180deg,
+    rgb(6 7 8 / 0.7) 0%, rgb(6 7 8 / 0.42) 40%, rgb(6 7 8 / 0.55) 100%);
+}
+.atmos--reactions img { object-position: 26% 80%; }
+
+/* ---- B: deeper, quieter, further away ---------------------- */
+
+.atmos--meme {
+  --atmos-o: 0.30;
+  --atmos-scrim: linear-gradient(180deg,
+    rgb(5 5 6 / 0.72) 0%, rgb(5 5 6 / 0.4) 42%, rgb(5 5 6 / 0.6) 100%);
+}
+.atmos--meme img { object-position: 50% 26%; }
+
+/* least noise of all: the fragments need room to breathe */
+.atmos--lore {
+  --atmos-o: 0.22;
+}
+.atmos--lore img { object-position: 84% 16%; }
+
+.atmos--universe {
+  --atmos-o: 0.34;
+  --atmos-scrim: linear-gradient(180deg,
+    rgb(5 5 6 / 0.64) 0%, rgb(5 5 6 / 0.34) 46%, rgb(5 5 6 / 0.56) 100%);
+}
+.atmos--universe img { object-position: 30% 54%; }
+
+/* centred content, so the scrim is centred too */
+.atmos--almosts {
+  --atmos-o: 0.32;
+  --atmos-scrim: radial-gradient(120% 90% at 50% 46%,
+    rgb(5 5 6 / 0.78) 0%, rgb(5 5 6 / 0.5) 44%, rgb(5 5 6 / 0.34) 100%);
+}
+.atmos--almosts img { object-position: 50% 68%; }
+
+/* the deepest point of the descent */
+.atmos--final {
+  --atmos-o: 0.26;
+  --atmos-scrim: radial-gradient(130% 100% at 50% 30%,
+    rgb(4 4 5 / 0.74) 0%, rgb(4 4 5 / 0.5) 50%, rgb(4 4 5 / 0.38) 100%);
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 100%);
+          mask-image: linear-gradient(180deg, transparent 0%, #000 18%, #000 100%);
+}
+.atmos--final img { object-position: 50% 86%; }
+
+/* ---- mobile ------------------------------------------------
+   Copy runs full width here, so a left-weighted scrim protects nothing.
+   Every plate loses a little presence and gains a vertical scrim instead. */
+@media (max-width: 700px) {
+  .atmos img { opacity: calc(var(--atmos-o, 0.3) * 0.72); }
+  .atmos::after {
+    background: linear-gradient(180deg,
+      rgb(6 7 8 / 0.84) 0%,
+      rgb(6 7 8 / 0.6) 34%,
+      rgb(6 7 8 / 0.52) 66%,
+      rgb(6 7 8 / 0.74) 100%);
+  }
+  /* pull the framing toward the quieter part of each plate */
+  .atmos--what img { object-position: 74% 70%; }
+  .atmos--missing img { object-position: 66% 30%; }
+  .atmos--reactions img { object-position: 20% 84%; }
+  .atmos--meme img { object-position: 46% 22%; }
+  .atmos--lore img { object-position: 88% 14%; }
+  .atmos--universe img { object-position: 26% 58%; }
+  .atmos--almosts img { object-position: 50% 72%; }
+  .atmos--final img { object-position: 50% 90%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .atmos img { transition: none; }
+}

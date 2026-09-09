@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
+import { Atmos } from '../components/Atmos';
 
 /**
  * MEME ENGINE — community remix surface (section 14).
@@ -101,6 +102,7 @@ export function MemeEngine() {
 
   return (
     <section className="sec meme" id="meme" aria-labelledby="meme-h">
+      <Atmos plate="b" variant="meme" />
       <div className="shell">
         <p className="meta">04 — meme engine</p>
         <h2 className="display meme__h" id="meme-h">make one.<br />badly.</h2>

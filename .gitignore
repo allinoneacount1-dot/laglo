@@ -38,6 +38,7 @@ tools/evidence/
 tools/preview/
 tools/canon-out/
 tools/prod/
+tools/atmos/
 
 # ---- derived art ------------------------------------------------------
 # Regenerated from the committed source sheets by tools/build-*.mjs.

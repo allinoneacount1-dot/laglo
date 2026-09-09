@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Atmos } from '../components/Atmos';
 
 /**
  * The reaction set, taken straight from the supplied model sheet — each cell
@@ -22,6 +23,7 @@ export function Reactions() {
 
   return (
     <section className="sec reactions" id="reactions" aria-labelledby="reactions-h">
+      <Atmos plate="a" variant="reactions" />
       <div className="shell">
         <p className="meta">03 — reactions</p>
         <h2 className="display reactions__h" id="reactions-h">a whole<br />vocabulary<br />of nearly.</h2>
