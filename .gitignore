@@ -1,0 +1,48 @@
+# deps / build
+node_modules
+dist
+dist-ssr
+*.local
+.vercel
+
+# logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# env — this project needs none, but never let one slip in
+.env
+.env.*
+!.env.example
+
+# editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ---- QA artefacts -----------------------------------------------------
+# Screenshots and capture output from the QA harnesses. Regenerate with the
+# scripts in tools/; they are evidence, not source.
+tools/qa/
+tools/site/
+tools/evidence/
+tools/preview/
+tools/canon-out/
+
+# ---- derived art ------------------------------------------------------
+# Regenerated from the committed source sheets by tools/build-*.mjs.
+# The owner's three original sheets ARE committed; these are not.
+assets-src/plate.png
+assets-src/derived/
+
+# NOTE: tools/canon-golden/ is deliberately NOT ignored. Those five renders
+# are the canonical regression references (npm run canon:golden).

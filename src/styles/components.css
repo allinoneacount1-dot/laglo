@@ -1,0 +1,97 @@
+/* ============================================================
+   Shared components
+   ============================================================ */
+
+/* ---- wordmark: canonical lockup, two tintable masks --------- */
+.wordmark {
+  position: relative; display: inline-block; flex: none;
+  height: var(--wm-h, 34px);
+  /* the lockup is 416x122 in the supplied sheet; never distort it */
+  width: calc(var(--wm-h, 34px) * 416 / 122);
+}
+.wordmark__ink,
+.wordmark__acid { position: absolute; inset: 0; }
+.wordmark__ink {
+  background: var(--cream);
+  -webkit-mask: url('/laglo/wordmark-ink-mask.png') center / contain no-repeat;
+          mask: url('/laglo/wordmark-ink-mask.png') center / contain no-repeat;
+}
+.wordmark__acid {
+  background: var(--acid);
+  -webkit-mask: url('/laglo/wordmark-acid-mask.png') center / contain no-repeat;
+          mask: url('/laglo/wordmark-acid-mask.png') center / contain no-repeat;
+}
+.wordmark--ink .wordmark__ink { background: var(--ink); }
+
+/* ---- navigation: a compact floating instrument -------------- */
+.nav {
+  position: fixed;
+  top: 14px; left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  /* stays a compact instrument even when the shell widens on large displays */
+  width: min(calc(100% - 24px), 1180px);
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: 8px 8px 8px 14px;
+  border-radius: var(--r-pill);
+  transition: background var(--t-normal) var(--e-out),
+              backdrop-filter var(--t-normal) var(--e-out),
+              box-shadow var(--t-normal) var(--e-out);
+}
+/* clear at rest; denser once the page has moved under it */
+.nav[data-stuck='yes'] {
+  --g-fill: var(--glass-frost-fill);
+  --g-blur: var(--glass-frost-blur);
+}
+.nav__home { display: flex; align-items: center; gap: 10px; }
+.nav__mark { width: 30px; height: 30px; border-radius: 50%; }
+.nav__links {
+  display: flex; align-items: center; gap: 2px;
+  margin-left: auto;
+}
+.nav__link {
+  position: relative;
+  padding: 8px 13px;
+  border-radius: var(--r-pill);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: color var(--t-fast) var(--e-out), background var(--t-fast) var(--e-out);
+}
+.nav__link:hover { color: var(--text); background: color-mix(in oklab, var(--cream) 8%, transparent); }
+/* the fragment shifts a little when you hover a link */
+.nav__link::after {
+  content: '';
+  position: absolute; top: 7px; right: 6px;
+  width: 4px; height: 4px; border-radius: 1px;
+  background: var(--acid);
+  opacity: 0; transform: translate(-2px, 2px);
+  transition: opacity var(--t-normal) var(--e-hesitate), transform var(--t-normal) var(--e-hesitate);
+}
+.nav__link:hover::after { opacity: 1; transform: none; }
+
+.nav__cta {
+  margin-left: 4px;
+  padding: 9px 16px;
+  border-radius: var(--r-pill);
+  background: var(--acid);
+  color: var(--ink);
+  font-size: 13px; font-weight: 600;
+  border: 0; cursor: pointer;
+  transition: transform var(--t-normal) var(--e-hesitate), filter var(--t-fast) var(--e-out);
+}
+.nav__cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.nav__cta:active { transform: translateY(0); }
+
+@media (max-width: 700px) {
+  /* 44px minimum on every control: measured targets were 30-37px */
+  .nav { top: 10px; padding: 6px 6px 6px 12px; gap: var(--s-3); }
+  .nav__links { gap: 0; }
+  .nav__home { min-height: 44px; }
+  .nav__link {
+    padding: 0 10px; font-size: 12px;
+    min-height: 44px; display: inline-flex; align-items: center;
+  }
+  .nav__link--wide { display: none; }
+  .nav__cta { padding: 0 16px; font-size: 12.5px; min-height: 44px; display: inline-flex; align-items: center; }
+}

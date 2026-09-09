@@ -1,0 +1,10 @@
+import { chromium } from 'playwright';
+const b = await chromium.launch({ headless: true, args: ['--use-angle=d3d11','--enable-gpu','--ignore-gpu-blocklist','--disable-renderer-backgrounding'] });
+const p = await (await b.newContext({ viewport: { width: 1700, height: 700 }, deviceScaleFactor: 1.5 })).newPage();
+p.on('pageerror', (e) => console.log('ERR', e.message));
+await p.goto('http://localhost:5178/sweep.html', { waitUntil: 'networkidle' });
+await p.waitForFunction(() => document.documentElement.dataset.canon === 'ready', { timeout: 20000 });
+await p.waitForTimeout(400);
+await p.locator('.row').first().screenshot({ path: 'D:/CLAUDE/laglo/tools/canon-out/sweep.png' });
+console.log('sweep captured');
+await b.close();

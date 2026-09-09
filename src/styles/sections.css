@@ -1,0 +1,332 @@
+/* ============================================================
+   SECTIONS
+   Each one behaves differently in space. Same system, no
+   repeated bento grid, nothing decorative that isn't from
+   LAGLO's world: loading, waiting, gaps, 99%.
+   ============================================================ */
+.sec { padding-block: clamp(96px, 14vw, 200px); }
+
+/* Reveals: arrive, then hesitate. Never a fade-up on everything.
+   The hidden state only applies once JS has armed it, so content is never
+   withheld if the observer does not run. */
+html[data-reveal-armed='yes'] [data-reveal] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--t-slow) var(--e-hesitate), transform var(--t-slow) var(--e-hesitate);
+}
+html[data-reveal-armed='yes'] [data-reveal][data-in='yes'] { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-reveal-armed='yes'] [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+/* ---- 01 WHAT IS LAGLO: oversized editorial type -------------- */
+.what { background: var(--bg); }
+.what__lead {
+  font-size: clamp(52px, 11vw, 148px);
+  margin-block: var(--s-5) var(--s-8);
+  color: var(--text);
+}
+.what__list {
+  display: flex; flex-direction: column; gap: var(--s-2);
+  font-size: clamp(20px, 3.4vw, 40px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  color: var(--text-faint);
+  margin-bottom: var(--s-7);
+}
+.what__list li:last-child { color: var(--acid); }
+.what__end {
+  font-size: clamp(64px, 16vw, 210px);
+  color: var(--text-ghost);
+  line-height: 0.8;
+  margin-bottom: var(--s-6);
+}
+.what__note { max-width: 32rem; }
+
+/* ---- 02 THE MISSING 1%: the close-up attempt ----------------- */
+.missing {
+  background:
+    radial-gradient(90% 70% at 78% 40%, color-mix(in oklab, var(--acid) 5%, transparent) 0%, transparent 60%),
+    var(--bg-deep);
+  overflow: clip;
+}
+.missing__h { font-size: clamp(40px, 6.4vw, 92px); margin-block: var(--s-4) var(--s-6); }
+.missing__stage {
+  display: flex; flex-direction: column; gap: var(--s-6);
+  align-items: flex-start;
+}
+/* headline left, the attempt right: the empty half was doing nothing */
+@media (min-width: 900px) {
+  .missing .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "meta meta" "head stage" "note stage";
+    column-gap: clamp(32px, 6vw, 88px);
+    align-items: center;
+  }
+  .missing .meta { grid-area: meta; }
+  .missing__h { grid-area: head; margin-bottom: var(--s-4); }
+  .missing__stage { grid-area: stage; align-items: flex-end; }
+  .missing__note { grid-area: note; margin-top: 0; align-self: start; }
+}
+.missing__track {
+  position: relative;
+  width: 100%; max-width: 520px;
+  height: 190px;
+  display: flex; align-items: center; justify-content: flex-end;
+  touch-action: pan-y;
+}
+/* the path it travels, so the affordance is visible before you touch it */
+.missing__track::before {
+  content: '';
+  position: absolute; left: 0; right: 84px; top: 50%;
+  height: 1px; transform: translateY(-0.5px);
+  background: linear-gradient(90deg,
+    transparent 0%,
+    color-mix(in oklab, var(--cream) 14%, transparent) 22%,
+    color-mix(in oklab, var(--acid) 34%, transparent) 100%);
+}
+.missing__slot { width: 168px; height: 168px; flex: none; }
+.missing__slot svg { width: 100%; height: 100%; overflow: visible; }
+.missing__ring {
+  fill: none;
+  stroke: color-mix(in oklab, var(--cream) calc(30% + var(--near, 0) * 50%), transparent);
+  stroke-width: 9;
+  stroke-linecap: round;
+  transform: rotate(-42deg);
+  transform-origin: 50% 50%;
+  transition: stroke var(--t-normal) var(--e-out);
+}
+.missing__piece {
+  position: absolute; right: 52px;
+  width: 86px; height: 37px;
+  border: 0; padding: 0;
+  border-radius: 15px;
+  background: linear-gradient(150deg, #E4FF7A 0%, var(--acid) 46%, #A8DE2E 100%);
+  box-shadow: 0 0 22px -6px color-mix(in oklab, var(--acid) 65%, transparent),
+              inset 0 1px 0 rgb(255 255 255 / 0.5);
+  cursor: grab;
+  touch-action: none;
+  transition: box-shadow var(--t-normal) var(--e-out);
+}
+.missing__piece[data-held='yes'] {
+  cursor: grabbing;
+  box-shadow: 0 0 34px -4px color-mix(in oklab, var(--acid) 80%, transparent),
+              inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.missing__readout {
+  display: inline-flex; align-items: baseline; gap: var(--s-4);
+  padding: 14px 24px; border-radius: var(--r-pill);
+}
+.missing__pct {
+  font-family: var(--font-mono); font-size: 26px; font-weight: 500;
+  color: var(--cream); font-variant-numeric: tabular-nums;
+}
+.missing__word { font-size: 15px; color: var(--acid); font-weight: 500; min-width: 6.5em; }
+.missing__note { max-width: 30rem; margin-top: var(--s-7); }
+
+/* ---- 03 REACTIONS: one dominant figure, the rest queued ------ */
+.reactions { background: var(--bg); }
+.reactions__h { font-size: clamp(34px, 5.4vw, 74px); margin-block: var(--s-4) var(--s-7); }
+.reactions__stage {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: clamp(24px, 5vw, 64px);
+  align-items: center;
+}
+.reactions__hero { margin: 0; position: relative; }
+.reactions__hero img {
+  width: 100%; max-width: 268px; height: auto;
+  filter: drop-shadow(0 30px 50px rgb(0 0 0 / 0.55));
+}
+.reactions__hero figcaption {
+  display: flex; flex-direction: column; gap: 2px; margin-top: var(--s-4);
+}
+.reactions__say {
+  font-size: clamp(24px, 3vw, 34px); font-weight: 600;
+  letter-spacing: -0.03em; color: var(--acid);
+}
+.reactions__rail {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--s-3);
+}
+/* Not glass. Twelve identical glass panels is the wall the brief warns about;
+   glass is reserved for navigation, the working surface and progress. */
+.reactions__chip {
+  width: 100%; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+  padding: var(--s-3) var(--s-2);
+  border-radius: var(--r-md);
+  border: 1px solid color-mix(in oklab, var(--cream) 8%, transparent);
+  background: color-mix(in oklab, var(--cream) 3%, transparent);
+  transition: transform var(--t-normal) var(--e-hesitate),
+              background var(--t-fast) var(--e-out),
+              border-color var(--t-fast) var(--e-out);
+}
+.reactions__chip:hover { background: color-mix(in oklab, var(--cream) 7%, transparent); }
+.reactions__chip img { width: 100%; max-width: 62px; height: auto; }
+.reactions__chip .meta { font-size: 9px; letter-spacing: 0.1em; }
+.reactions__chip[data-on='yes'] {
+  background: color-mix(in oklab, var(--acid) 12%, transparent);
+  border-color: color-mix(in oklab, var(--acid) 45%, transparent);
+  transform: translateY(-3px);
+}
+
+/* ---- 04 MEME ENGINE ----------------------------------------- */
+.meme { background: var(--bg-deep); }
+.meme__h { font-size: clamp(34px, 5.4vw, 74px); margin-block: var(--s-4) var(--s-7); }
+.meme__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: start;
+}
+.meme__preview { padding: 14px; border-radius: var(--r-lg); }
+.meme__preview canvas {
+  width: 100%; height: auto; border-radius: var(--r-md);
+  position: relative; z-index: 2;
+}
+.meme__controls { display: flex; flex-direction: column; gap: var(--s-5); }
+.meme__set { border: 0; padding: 0; margin: 0; }
+.meme__set legend { padding: 0; margin-bottom: var(--s-3); }
+.meme__chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.meme__chip {
+  padding: 8px 13px; border-radius: var(--r-pill);
+  border: 1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+  background: transparent; color: var(--text-muted);
+  font-size: 13px; cursor: pointer;
+  transition: all var(--t-fast) var(--e-out);
+}
+.meme__chip:hover { color: var(--text); border-color: color-mix(in oklab, var(--cream) 30%, transparent); }
+.meme__chip[data-on='yes'] {
+  background: var(--acid); border-color: var(--acid); color: var(--ink); font-weight: 600;
+}
+.meme__input {
+  margin-top: var(--s-3); width: 100%;
+  padding: 11px 14px; border-radius: var(--r-sm);
+  border: 1px solid color-mix(in oklab, var(--cream) 14%, transparent);
+  background: color-mix(in oklab, var(--cream) 4%, transparent);
+  color: var(--text); font-size: 14px;
+}
+.meme__input::placeholder { color: var(--text-ghost); }
+.meme__save {
+  align-self: flex-start;
+  padding: 13px 24px; border: 0; border-radius: var(--r-pill);
+  background: var(--acid); color: var(--ink);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  transition: filter var(--t-fast) var(--e-out), transform var(--t-normal) var(--e-hesitate);
+}
+.meme__save:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.meme__save:disabled { opacity: 0.75; cursor: default; }
+
+/* ---- 05 LORE: fragments in the dark -------------------------- */
+.lore { background: var(--bg); }
+.lore__list {
+  margin-block: var(--s-6) var(--s-8);
+  display: flex; flex-direction: column; gap: var(--s-3);
+  counter-reset: frag;
+}
+.lore__frag {
+  font-size: clamp(18px, 2.6vw, 30px);
+  font-weight: 500; letter-spacing: -0.02em;
+  color: var(--text-muted);
+  padding-left: var(--s-6);
+  position: relative;
+}
+.lore__frag::before {
+  counter-increment: frag;
+  content: counter(frag, decimal-leading-zero);
+  position: absolute; left: 0; top: 0.45em;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--text-ghost); letter-spacing: 0.1em;
+}
+.lore__out {
+  font-size: clamp(40px, 8vw, 104px);
+  color: var(--text);
+}
+
+/* ---- 06 UNIVERSE: hints, not reveals ------------------------- */
+.universe { background: var(--bg-deep); }
+.universe__h { font-size: clamp(34px, 5.4vw, 74px); margin-block: var(--s-4) var(--s-6); }
+.universe__row {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--s-4);
+}
+.universe__card {
+  padding: var(--s-5); border-radius: var(--r-lg);
+  display: flex; flex-direction: column; gap: 6px; min-height: 190px;
+}
+.universe__card > * { position: relative; z-index: 2; }
+.universe__glyph {
+  width: 34px; height: 34px; margin-bottom: var(--s-3);
+  display: grid; place-items: center;
+  opacity: 0.5;
+}
+.universe__glyph svg { width: 100%; height: 100%; fill: none; stroke: var(--acid); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+.universe__glyph--ping { border-radius: 50%; background: var(--coral); width: 15px; height: 15px; }
+.universe__glyph--cache { border-radius: 3px; background: color-mix(in oklab, var(--cream) 26%, transparent); width: 26px; height: 26px; }
+.universe__name { font-weight: 700; letter-spacing: 0.02em; font-size: 15px; }
+.universe__note { color: var(--text-faint); font-size: 14px; }
+.universe__status { margin-top: auto; }
+
+/* ---- 07 THE ALMOSTS ------------------------------------------ */
+.almosts {
+  background:
+    radial-gradient(70% 60% at 50% 0%, color-mix(in oklab, var(--acid) 6%, transparent) 0%, transparent 62%),
+    var(--bg);
+  text-align: center;
+}
+.almosts__inner { display: flex; flex-direction: column; align-items: center; gap: var(--s-5); }
+.almosts__h { font-size: clamp(40px, 8vw, 104px); }
+.almosts__lede { max-width: 26rem; }
+.almosts__cta {
+  padding: 16px 30px; border: 0; border-radius: var(--r-pill);
+  background: var(--acid); color: var(--ink);
+  font-size: 15px; font-weight: 600; cursor: pointer;
+  transition: filter var(--t-fast) var(--e-out), transform var(--t-slow) var(--e-hesitate);
+  font-variant-numeric: tabular-nums;
+}
+.almosts__cta:hover { filter: brightness(1.06); transform: translateY(-1px); }
+.almosts__cta[data-state='loading'] { background: color-mix(in oklab, var(--acid) 55%, var(--bg-raise)); color: var(--cream); }
+.almosts__cta[data-state='in'] { background: transparent; color: var(--acid); box-shadow: inset 0 0 0 1px var(--acid); }
+
+/* ---- 08 FINAL 99% -------------------------------------------- */
+.final {
+  background: var(--bg-deep);
+  padding-block: clamp(80px, 12vw, 160px) var(--s-6);
+  border-top: 1px solid color-mix(in oklab, var(--cream) 7%, transparent);
+}
+.final__inner { display: flex; flex-direction: column; align-items: center; gap: var(--s-3); }
+.final__big {
+  font-size: clamp(96px, 26vw, 340px);
+  line-height: 0.78;
+  color: var(--text-ghost);
+  letter-spacing: -0.06em;
+}
+.final__say { color: var(--text-faint); font-size: 16px; }
+.final__foot {
+  margin-top: var(--s-8); width: 100%;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--s-4);
+  flex-wrap: wrap;
+}
+
+/* ---- responsive --------------------------------------------- */
+@media (max-width: 900px) {
+  .reactions__stage { grid-template-columns: 1fr; }
+  .reactions__hero img { max-width: 240px; margin-inline: auto; }
+  .reactions__hero figcaption { align-items: center; text-align: center; }
+  .meme__grid { grid-template-columns: 1fr; }
+  .universe__row { grid-template-columns: 1fr; }
+  .universe__card { min-height: 0; }
+}
+@media (max-width: 560px) {
+  .reactions__rail { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .reactions__chip { padding: 8px 4px; }
+  .reactions__chip .meta { font-size: 8px; letter-spacing: 0.06em; }
+  .missing__track { max-width: 100%; height: 150px; }
+  .missing__track::before { right: 66px; }
+  .missing__slot { width: 132px; height: 132px; }
+  .missing__piece { right: 40px; width: 72px; height: 32px; }
+  .missing__pct { font-size: 22px; }
+  .final__foot { justify-content: center; text-align: center; }
+}

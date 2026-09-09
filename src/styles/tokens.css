@@ -1,0 +1,92 @@
+/* ============================================================
+   LAGLO — DESIGN TOKENS  (§31)
+   The only place raw values live. Nothing below this file
+   should invent a colour, a duration, a blur or a radius.
+   ============================================================ */
+:root {
+  /* -- canonical palette (character bible, unchanged) -------- */
+  --cream:  #F0E8D8;
+  --ink:    #111111;
+  --acid:   #C8FF45;
+  --coral:  #FF6257;
+
+  /* -- scene-derived ground ---------------------------------- */
+  --bg:        #08090A;
+  --bg-deep:   #050506;
+  --bg-raise:  #101113;
+
+  /* -- ink on dark ------------------------------------------- */
+  --text:        color-mix(in oklab, var(--cream) 94%, white);
+  --text-muted:  color-mix(in oklab, var(--cream) 58%, transparent);
+  /* 52% is the point where meta labels, the hero hint and the closing line all
+     clear AA 4.5 on the darkest ground we ship. Measured, not guessed. */
+  --text-faint:  color-mix(in oklab, var(--cream) 52%, transparent);
+  --text-ghost:  color-mix(in oklab, var(--cream) 16%, transparent);
+
+  /* -- glass materials (§05) --------------------------------- */
+  /* four tiers with genuinely different translucency, blur and
+     edge energy, so glass carries hierarchy rather than decorating */
+  --glass-clear-fill:    color-mix(in oklab, var(--cream) 5%, transparent);
+  --glass-clear-blur:    14px;
+  --glass-clear-sat:     150%;
+  --glass-clear-edge:    color-mix(in oklab, var(--cream) 26%, transparent);
+
+  --glass-frost-fill:    color-mix(in oklab, var(--cream) 9%, transparent);
+  --glass-frost-blur:    26px;
+  --glass-frost-sat:     135%;
+  --glass-frost-edge:    color-mix(in oklab, var(--cream) 18%, transparent);
+
+  --glass-dense-fill:    color-mix(in oklab, var(--bg-raise) 78%, transparent);
+  --glass-dense-blur:    40px;
+  --glass-dense-sat:     120%;
+  --glass-dense-edge:    color-mix(in oklab, var(--cream) 22%, transparent);
+
+  --glass-acid-fill:     color-mix(in oklab, var(--acid) 12%, transparent);
+  --glass-acid-blur:     18px;
+  --glass-acid-sat:      165%;
+  --glass-acid-edge:     color-mix(in oklab, var(--acid) 55%, transparent);
+
+  /* specular + dispersion, kept extremely restrained */
+  --glass-specular: color-mix(in oklab, white 32%, transparent);
+  --glass-disperse-warm: color-mix(in oklab, var(--acid) 40%, transparent);
+  --glass-disperse-cool: color-mix(in oklab, #7FD4FF 34%, transparent);
+  --glass-shadow: 0 24px 70px -28px rgb(0 0 0 / 0.85), 0 2px 8px -4px rgb(0 0 0 / 0.6);
+
+  /* -- radius ------------------------------------------------ */
+  --r-xs: 6px;  --r-sm: 10px; --r-md: 16px;
+  --r-lg: 24px; --r-xl: 34px; --r-pill: 999px;
+
+  /* -- spacing ----------------------------------------------- */
+  --s-1: 4px;  --s-2: 8px;  --s-3: 12px; --s-4: 16px;
+  --s-5: 24px; --s-6: 32px; --s-7: 48px; --s-8: 64px;
+  --s-9: 96px; --s-10: 136px; --s-11: 184px;
+
+  /* -- motion (§32) ------------------------------------------ */
+  /* the signature is pacing, not quantity */
+  --t-fast:   120ms;   /* micro feedback */
+  --t-normal: 260ms;   /* navigation, controls */
+  --t-slow:   700ms;   /* LAGLO's own movement */
+  --t-vslow:  2400ms;  /* atmosphere */
+  --e-out:    cubic-bezier(0.22, 1, 0.36, 1);
+  --e-inout:  cubic-bezier(0.65, 0, 0.35, 1);
+  --e-hesitate: cubic-bezier(0.16, 0.9, 0.22, 1);  /* arrives, then thinks about it */
+
+  /* -- type -------------------------------------------------- */
+  --font-display: 'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body:    'Archivo', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, SFMono-Regular, 'Cascadia Mono', monospace;
+
+  --grain-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+
+  /* -- layout ------------------------------------------------ */
+  /* grows on large displays: at a fixed 1280 the copy floated 712px from the
+     left edge on a 2560 screen and the composition read as a small island */
+  --shell: clamp(1280px, 78vw, 1680px);
+  --gutter: clamp(20px, 5vw, 72px);
+  --nav-h: 62px;
+}
+
+/* Honour the OS setting without removing information (§29) */
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-fast: 1ms; --t-normal: 1ms; --t-slow: 1ms; --t-vslow: 1ms; }
+}

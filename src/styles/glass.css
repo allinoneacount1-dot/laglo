@@ -1,0 +1,105 @@
+/* ============================================================
+   LAGLO — LIQUID GLASS  (§05)
+   Glass is a material with hierarchy, not a translucent
+   rectangle. Every tier differs in translucency, blur, edge
+   energy and internal reflection.
+   ============================================================ */
+.glass {
+  position: relative;
+  isolation: isolate;
+  border-radius: var(--r-lg);
+  background: var(--g-fill);
+  -webkit-backdrop-filter: blur(var(--g-blur)) saturate(var(--g-sat));
+  backdrop-filter: blur(var(--g-blur)) saturate(var(--g-sat));
+  box-shadow: var(--glass-shadow);
+  transition: background var(--t-normal) var(--e-out),
+              backdrop-filter var(--t-normal) var(--e-out),
+              transform var(--t-normal) var(--e-hesitate);
+}
+
+/* edge: a lit rim that runs bright at the top-left and fades away,
+   which is what actually sells thickness */
+.glass::before {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(
+    145deg,
+    var(--glass-specular) 0%,
+    var(--g-edge) 26%,
+    transparent 52%,
+    color-mix(in oklab, var(--g-edge) 40%, transparent) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* internal reflection + a very restrained chromatic split on the rim */
+.glass::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  background:
+    radial-gradient(120% 90% at 12% 0%,
+      color-mix(in oklab, white 12%, transparent) 0%, transparent 58%),
+    linear-gradient(180deg,
+      color-mix(in oklab, white 6%, transparent) 0%, transparent 34%);
+  box-shadow:
+    inset  0.5px 0 0 -0.2px var(--glass-disperse-cool),
+    inset -0.5px 0 0 -0.2px var(--glass-disperse-warm);
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+/* Progressive enhancement: where a browser can run an SVG filter on the
+   backdrop we get genuine displacement, not just blur. Falls back silently. */
+@supports (backdrop-filter: url(#lg-refract)) {
+  .glass[data-refract='on'] {
+    -webkit-backdrop-filter: blur(var(--g-blur)) saturate(var(--g-sat)) url(#lg-refract);
+            backdrop-filter: blur(var(--g-blur)) saturate(var(--g-sat)) url(#lg-refract);
+  }
+}
+
+/* ---- tiers ------------------------------------------------- */
+.glass--clear {
+  --g-fill: var(--glass-clear-fill);
+  --g-blur: var(--glass-clear-blur);
+  --g-sat:  var(--glass-clear-sat);
+  --g-edge: var(--glass-clear-edge);
+}
+.glass--frosted {
+  --g-fill: var(--glass-frost-fill);
+  --g-blur: var(--glass-frost-blur);
+  --g-sat:  var(--glass-frost-sat);
+  --g-edge: var(--glass-frost-edge);
+}
+.glass--dense {
+  --g-fill: var(--glass-dense-fill);
+  --g-blur: var(--glass-dense-blur);
+  --g-sat:  var(--glass-dense-sat);
+  --g-edge: var(--glass-dense-edge);
+}
+/* acid glass is reserved for loading / progress / completion only */
+.glass--acid {
+  --g-fill: var(--glass-acid-fill);
+  --g-blur: var(--glass-acid-blur);
+  --g-sat:  var(--glass-acid-sat);
+  --g-edge: var(--glass-acid-edge);
+  box-shadow: var(--glass-shadow),
+              0 0 40px -12px color-mix(in oklab, var(--acid) 40%, transparent);
+}
+
+/* Mobile GPUs choke on stacked large-radius blurs (§27/28) */
+@media (max-width: 700px) {
+  .glass { --g-blur: min(var(--g-blur), 18px); }
+}
+/* If the device can't composite backdrop blur, fall back to a solid-ish fill
+   so text contrast never depends on the effect landing. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: color-mix(in oklab, var(--bg-raise) 88%, transparent); }
+}

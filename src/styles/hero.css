@@ -1,0 +1,193 @@
+/* ============================================================
+   HERO — layered cinematic scene
+   layer 0  the supplied plate
+   layer 1  atmosphere (readability only)
+   layer 2  the real-time character
+   layer 3  glass + LAGLO's own language
+   ============================================================ */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  overflow: clip;
+  background: var(--bg-deep);
+  isolation: isolate;
+}
+
+/* ---- layer 0 ------------------------------------------------ */
+.hero__plate { position: absolute; inset: 0; z-index: 0; }
+.hero__plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* centred on purpose: the framing solver in framing.ts reproduces this
+     exact mapping to place the 3D character on his platform. Art direction
+     happens by swapping the crop, not by nudging object-position. */
+  object-position: center;
+  transform: scale(var(--sc, 1)) translate3d(var(--px, 0), var(--py, 0), 0);
+  transform-origin: 62% 50%;
+  transition: transform var(--t-vslow) cubic-bezier(0.2, 0.6, 0.2, 1);
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__plate img { transform: none; transition: none; }
+}
+
+/* ---- layer 1: contrast where the copy sits, nothing elsewhere */
+.hero__atmos {
+  position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background:
+    /* Luminance control on the plate's ring. Squint-tested: unchecked, the ring
+       is the brightest object in the frame and the eye lands there before it
+       lands on LAGLO. This pulls it under him without flattening the scene. */
+    radial-gradient(58% 66% at 96% 26%, rgb(3 4 5 / 0.62) 0%, rgb(3 4 5 / 0.34) 42%, transparent 72%),
+    linear-gradient(97deg,
+      rgb(4 5 6 / 0.90) 0%,
+      rgb(4 5 6 / 0.72) 18%,
+      rgb(4 5 6 / 0.34) 38%,
+      rgb(4 5 6 / 0.04) 56%,
+      transparent 68%),
+    radial-gradient(130% 100% at 50% 108%, rgb(3 4 5 / 0.62) 0%, transparent 58%),
+    radial-gradient(150% 120% at 50% 50%, transparent 42%, rgb(2 3 4 / 0.55) 100%);
+}
+.hero__atmos[data-layout='portrait'] {
+  background:
+    radial-gradient(70% 34% at 88% 22%, rgb(3 4 5 / 0.5) 0%, transparent 70%),
+    linear-gradient(180deg,
+      rgb(4 5 6 / 0.92) 0%,
+      rgb(4 5 6 / 0.66) 22%,
+      rgb(4 5 6 / 0.12) 40%,
+      transparent 54%),
+    linear-gradient(0deg, rgb(3 4 5 / 0.85) 0%, rgb(3 4 5 / 0.3) 18%, transparent 34%),
+    radial-gradient(150% 110% at 50% 50%, transparent 46%, rgb(2 3 4 / 0.5) 100%);
+}
+
+/* ---- layer 2 ------------------------------------------------ */
+.hero__stage { position: absolute; inset: 0; z-index: 2; }
+.hero__stage canvas { display: block; width: 100% !important; height: 100% !important; }
+/* only while the 1% is actually held, so normal page scrolling still works */
+html[data-dragging='yes'] .hero__stage canvas { touch-action: none; }
+html[data-dragging='yes'] { user-select: none; }
+.hero__fallback {
+  position: absolute; left: 62%; top: 50%;
+  transform: translate(-50%, -46%);
+  width: clamp(180px, 26vw, 320px); height: auto;
+}
+
+/* ---- layer 3 ------------------------------------------------ */
+.hero__ui {
+  position: relative; z-index: 4;
+  min-height: 100svh;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  align-items: center;
+  width: 100%; max-width: var(--shell);
+  margin-inline: auto;
+  padding: calc(var(--nav-h) + var(--s-7)) var(--gutter) var(--s-6);
+  pointer-events: none;
+}
+.hero__ui > * { pointer-events: auto; }
+
+.hero__copy { max-width: clamp(30rem, 34vw, 38rem); }
+.hero__mark { display: block; margin-bottom: var(--s-3); --wm-h: clamp(52px, 4vw, 86px); }
+.hero__tag { margin-bottom: var(--s-5); color: var(--text-muted); }
+.hero__lede {
+  font-size: clamp(16px, 1.4vw, 22px);
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin-bottom: var(--s-6);
+  text-wrap: balance;
+}
+
+/* the readout is the only acid glass above the fold */
+.hero__readout {
+  display: flex; align-items: center; gap: var(--s-4);
+  padding: 13px 20px;
+  border-radius: var(--r-pill);
+  width: fit-content;
+  min-width: 17rem;
+}
+.hero__bar {
+  position: relative;
+  flex: 1;
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: color-mix(in oklab, var(--ink) 55%, transparent);
+  overflow: hidden;
+  z-index: 2;
+}
+.hero__fill {
+  position: absolute; inset: 0 auto 0 0;
+  width: calc(var(--p, 99) * 1%);
+  border-radius: inherit;
+  background: linear-gradient(90deg,
+    color-mix(in oklab, var(--acid) 70%, #7FBF20) 0%, var(--acid) 100%);
+  box-shadow: 0 0 12px -2px color-mix(in oklab, var(--acid) 70%, transparent);
+}
+.hero__pct {
+  z-index: 2;
+  font-family: var(--font-mono);
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--cream);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.6em; text-align: right;
+}
+
+.hero__caption {
+  margin-top: var(--s-5);
+  min-height: 1.6em;
+  font-size: clamp(20px, 2.3vw, 28px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--acid);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity var(--t-slow) var(--e-out), transform var(--t-slow) var(--e-out);
+}
+.hero__caption[data-on='yes'] { opacity: 1; transform: none; }
+
+.hero__hint {
+  justify-self: end; align-self: end;
+  color: var(--text-faint);
+  text-align: right;
+}
+
+/* ---- boot -------------------------------------------------- */
+.hero__boot {
+  position: absolute; inset: 0; z-index: 6;
+  display: grid; place-content: center;
+  background: var(--bg-deep);
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+  grid-auto-flow: column;
+  align-items: baseline;
+  animation: boot-out var(--t-slow) var(--e-out) forwards;
+  animation-delay: 120ms;
+}
+.hero__boot-n { font-size: 38px; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.hero__boot-u { font-size: 16px; }
+@keyframes boot-out { to { opacity: 0; visibility: hidden; } }
+
+/* ---- portrait: same asset, different composition ------------- */
+@media (max-width: 700px) {
+  .hero__ui {
+    grid-template-rows: auto 1fr auto;
+    align-items: start;
+    padding-top: calc(var(--nav-h) + var(--s-5));
+  }
+  .hero__copy { max-width: 19rem; }
+  .hero__mark { --wm-h: 42px; }
+  .hero__lede { font-size: 15px; margin-bottom: var(--s-5); }
+  .hero__readout { min-width: 0; width: 100%; max-width: 15rem; padding: 10px 14px; }
+  .hero__caption {
+    position: absolute; left: var(--gutter); right: var(--gutter);
+    bottom: 54px; margin-top: 0;
+  }
+  .hero__caption { font-size: 20px; }
+  .hero__hint { justify-self: start; text-align: left; }
+  .hero__plate img { transform: none; }
+}
+@media (max-width: 700px) and (max-height: 700px) {
+  .hero__lede { display: none; }
+}
